@@ -1,33 +1,10 @@
-/*
-	Information about pets is kept in two separate tables:
-	CREATE TABLE dogs (
-	  id int NOT NULL PRIMARY KEY,
-	  name VARCHAR(50) NOT NULL)
+/* Write a query that select all distinct pet names. */
+select distinct name from (
+	select name from dogs
+	union all
+	select name from cats) u
 
-	CREATE TABLE cats (
-		  id INTEGER NOT NULL PRIMARY KEY,
-		  name VARCHAR(50) NOT NULL)
-
-	Write a query that select all distinct pet names.
-*/
-
-select distinct name from 
-(
- select name from dogs
- union all
- select name from cats
-) a
-
-/*
-	App usage data are kept in the following table:
-	CREATE TABLE sessions (
-	  id INTEGER PRIMARY KEY,
-	  userId INTEGER NOT NULL,
-	  duration DECIMAL NOT NULL)
-
-	  Write a query that selects userId and average session duration for each user who has more than one session.
-*/
-
+/* Write a query that selects userId and average session duration for each user who has more than one session. */
 select
 	userid, 
 	avg(duration) as avg
@@ -37,20 +14,7 @@ where
 group by 
 	userid
 
-/*
-	The following data definition defines an organization's employee hierarchy.
-
-	An employee is a manager if any other employee has their managerId set to the first employees id. 
-	An employee who is a manager may or may not also have a manager.
-
-	CREATE TABLE employees(
-	  id INTEGER NOT NULL PRIMARY KEY,
-	  managerId INTEGER REFERENCES employees(id),
-	  name VARCHAR(30) NOT NULL)
-
-	  Write a query that selects the names of employees who are not managers.
-*/
-
+/*	Write a query that selects the names of employees who are not managers. */
 select name
 from employees
 where id NOT IN (
@@ -71,15 +35,16 @@ where id NOT IN (
 
 	Modify the provided SQLite create table statement so that:
 
-	- Only users from the users table can exist within users_roles.
-	- Only roles from the roles table can exist within users_roles.
-	- A user can only have a specific role once.
+	1. Only users from the users table can exist within users_roles.
+	2. Only roles from the roles table can exist within users_roles.
+	3. A user can only have a specific role once.
+
+	CREATE TABLE users_roles (
+	  userId INTEGER NOT NULL,
+	  roleId INTEGER NOT NULL,
+	  FOREIGN KEY(userId) REFERENCES users(id),
+	  FOREIGN KEY(roleId) REFERENCES roles(id),
+	  PRIMARY KEY (userId, roleId)
+	)
 */
 
-CREATE TABLE users_roles (
-  userId INTEGER NOT NULL,
-  roleId INTEGER NOT NULL,
-  FOREIGN KEY(userId) REFERENCES users(id),
-  FOREIGN KEY(roleId) REFERENCES roles(id),
-  PRIMARY KEY (userId, roleId)
-)
